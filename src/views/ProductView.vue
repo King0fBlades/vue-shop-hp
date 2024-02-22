@@ -36,7 +36,7 @@
       v-else
       class="flex flex-col lg:flex-row gap-8 2xl:gap-20 justify-between border-2 border-secondary rounded-xl p-4"
     >
-      <div class="flex flex-col gap-4 justify-between">
+      <div class="flex flex-col gap-4 justify-between h-1/2">
         <img
           :src="product.images[currentIndex]"
           :alt="product.images[currentIndex]"
