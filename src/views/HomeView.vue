@@ -306,6 +306,16 @@ const filteredProducts = computed(() => {
     })
   }
 
+  if (searchProducts.value !== '') {
+    const searchTerm = searchProducts.value.toLowerCase()
+    products = products.filter((product) => {
+      return (
+        product.title.toLowerCase().includes(searchTerm) ||
+        product.description.toLowerCase().includes(searchTerm)
+      )
+    })
+  }
+
   switch (selectedOption.value) {
     case 'a_z':
       products = products.sort((a, b) => a.title.localeCompare(b.title))
