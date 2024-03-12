@@ -2,10 +2,12 @@
   <header class="sticky top-0 z-50 bg-background text-white border-b-2 border-secondary">
     <nav class="container mx-auto flex flex-row items-center justify-between gap-4 py-6 px-4">
       <div>
-        <router-link to="/" class="text-2xl font-bold tracking-wide">Vue Shop</router-link>
+        <router-link :to="{ name: 'home' }" class="text-2xl font-bold tracking-wide"
+          >Vue Shop</router-link
+        >
       </div>
       <div class="flex gap-4 justify-center items-center">
-        <router-link to="cart" class="relative">
+        <router-link :to="{ name: 'cart' }" class="relative">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -19,8 +21,9 @@
             />
           </svg>
           <span
-            class="flex absolute items-center justify-center -right-2 -top-2 p-1 bg-primary text-xs rounded-full w-5 h-5"
-            >3</span
+            class="absolute items-center justify-center -right-2 -top-2 p-1 bg-primary text-xs rounded-full w-5 h-5"
+            :class="totalItems <= 0 ? 'hidden' : 'flex'"
+            >{{ totalItems }}</span
           >
         </router-link>
         <a href="https://github.com/King0fBlades">
@@ -42,4 +45,15 @@
   </header>
 </template>
 
-<script setup></script>
+<script setup>
+import { useCartStore } from '@/stores/cart'
+import { ref, watchEffect } from 'vue'
+
+const cartStore = useCartStore()
+
+const totalItems = ref(cartStore.totalItems)
+
+watchEffect(() => {
+  totalItems.value = cartStore.totalItems
+})
+</script>

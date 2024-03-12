@@ -1,34 +1,62 @@
 <template>
   <main class="container mx-auto my-8 md:mt-14 text-white flex flex-col px-4">
-    <!-- Search Bar -->
-    <div class="w-full bg-secondary rounded-lg text-primary sm:w-1/2 lg:w-1/3">
-      <label for="search" class="gap-2 px-2 flex items-center justify-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
-            clip-rule="evenodd"
-          />
-        </svg>
+    <div class="flex flex-row flex-wrap gap-4 justify-between items-center">
+      <div class="order-1">
+        <h2 v-if="!route.params.category" class="font-bold text-xl sm:text-2xl">
+          All products ({{ filteredProducts.length }})
+        </h2>
+        <h2 v-else class="font-bold text-xl">
+          {{ route.params.category[0].toUpperCase() + route.params.category.slice(1) }} ({{
+            filteredProducts.length
+          }})
+        </h2>
+      </div>
+      <!-- Search Bar -->
+      <div class="w-full order-last lg:order-2 bg-secondary rounded-lg text-primary lg:w-1/3">
+        <label for="search" class="gap-2 px-2 flex items-center justify-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10.5 3.75a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5ZM2.25 10.5a8.25 8.25 0 1 1 14.59 5.28l4.69 4.69a.75.75 0 1 1-1.06 1.06l-4.69-4.69A8.25 8.25 0 0 1 2.25 10.5Z"
+              clip-rule="evenodd"
+            />
+          </svg>
 
-        <input
-          id="search"
-          v-model="searchProducts"
-          type="text"
-          placeholder="Search for product"
-          class="pr-4 py-2 w-full bg-transparent placeholder:text-white placeholder:opacity-60 text-white rounded-lg outline-none"
-        />
-      </label>
+          <input
+            id="search"
+            v-model="searchProducts"
+            type="text"
+            placeholder="Search for product"
+            class="pr-4 py-2 w-full bg-transparent placeholder:text-white placeholder:opacity-60 text-white rounded-lg outline-none"
+          />
+        </label>
+      </div>
+      <!-- Sort -->
+      <div class="flex flex-row gap-2 order-3 w-1/3 sm:w-1/4 justify-end">
+        <label class="hidden sm:flex items-center gap-1 text-md font-medium" for="sort"
+          >Sort By</label
+        >
+        <select
+          id="sort"
+          v-model="selectedOption"
+          class="block w-2/3 sm:w-1/2 bg-secondary p-2 rounded-xl cursor-pointer"
+        >
+          <option v-for="(option, i) in sortOptions" :key="i" :value="option.value">
+            {{ option.text }}
+          </option>
+        </select>
+      </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row w-full gap-4 md:gap-8 mt-8 md:mt-14">
+    <!-- <div class="flex flex-col sm:flex-row w-full gap-4 md:gap-6 mt-8 md:mt-14"> -->
+    <div class="grid sm:grid-flow-col sm:grid-col-2 gap-4 md:gap-6 mt-8 md:mt-14">
       <!-- Side menu -->
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 sm:w-52 lg:w-60">
         <!-- Categories -->
         <div class="flex flex-col bg-secondary rounded-md h-fit">
           <div class="px-4 flex py-4 justify-between items-center gap-4 text-lg font-semibold">
@@ -47,7 +75,7 @@
                   d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 0 0 2.25-2.25V6a2.25 2.25 0 0 0-2.25-2.25H6A2.25 2.25 0 0 0 3.75 6v2.25A2.25 2.25 0 0 0 6 10.5Zm0 9.75h2.25A2.25 2.25 0 0 0 10.5 18v-2.25a2.25 2.25 0 0 0-2.25-2.25H6a2.25 2.25 0 0 0-2.25 2.25V18A2.25 2.25 0 0 0 6 20.25Zm9.75-9.75H18a2.25 2.25 0 0 0 2.25-2.25V6A2.25 2.25 0 0 0 18 3.75h-2.25A2.25 2.25 0 0 0 13.5 6v2.25a2.25 2.25 0 0 0 2.25 2.25Z"
                 />
               </svg>
-              <h2>Categories</h2>
+              <h2 class="font-bold text-xl tracking-wide">Categories</h2>
             </div>
             <button class="flex sm:hidden" @click="toggleCategories = !toggleCategories">
               <svg
@@ -71,11 +99,19 @@
             class="sm:flex flex-col gap-2 px-4 pb-4 sm:text-left"
           >
             <li>
-              <a href="" class="hover:border-b-primary hover:border-b-2">All</a>
+              <router-link
+                :to="{ name: 'home' }"
+                class="hover:border-b-primary hover:border-b-2 font-semibold text-lg"
+                >All</router-link
+              >
             </li>
-            <li><a href="" class="hover:border-b-primary hover:border-b-2">Clothes</a></li>
-            <li><a href="" class="hover:border-b-primary hover:border-b-2">Electronics</a></li>
-            <li><a href="" class="hover:border-b-primary hover:border-b-2">Furniture</a></li>
+            <li v-for="(category, i) in getCategories" :key="i">
+              <router-link
+                :to="{ name: 'category', params: { category } }"
+                class="hover:border-b-primary hover:border-b-2 font-semibold text-lg"
+                >{{ category[0].toUpperCase() + category.slice(1) }}</router-link
+              >
+            </li>
           </ul>
         </div>
         <!-- Filters -->
@@ -97,7 +133,7 @@
                 />
               </svg>
 
-              <h2>Filters</h2>
+              <h2 class="font-bold text-xl tracking-wide">Filters</h2>
             </div>
             <button class="flex sm:hidden" @click="toggleFilters = !toggleFilters">
               <svg
@@ -116,17 +152,57 @@
               </svg>
             </button>
           </div>
-          <ul
+          <div
             :class="toggleFilters ? 'flex' : 'hidden'"
-            class="sm:flex flex-col gap-2 px-4 pb-4 sm:text-left"
+            class="sm:flex flex-col gap-6 px-4 pb-4 sm:text-left"
           >
-            <li>
-              <a href="" class="hover:border-b-primary hover:border-b-2">All</a>
-            </li>
-            <li><a href="" class="hover:border-b-primary hover:border-b-2">Clothes</a></li>
-            <li><a href="" class="hover:border-b-primary hover:border-b-2">Electronics</a></li>
-            <li><a href="" class="hover:border-b-primary hover:border-b-2">Furniture</a></li>
-          </ul>
+            <div class="flex flex-col gap-4 mb-2">
+              <p class="border-b-2 border-primary pb-2 font-semibold text-lg">Shop by price</p>
+              <div class="flex flex-row justify-between">
+                <label for="minPrice" class="font-semibold">Min Price:</label>
+                <input
+                  id="minPrice"
+                  v-model="minPrice"
+                  type="number"
+                  min="0"
+                  max="1000"
+                  class="text-black w-1/3 rounded-sm p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
+
+              <div class="flex flex-row justify-between items-center">
+                <label for="maxPrice" class="font-semibold">Max Price:</label>
+                <input
+                  id="maxPrice"
+                  v-model="maxPrice"
+                  type="number"
+                  min="0"
+                  max="1000"
+                  class="text-black w-1/3 rounded-sm p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </div>
+            </div>
+            <div class="flex flex-col gap-4">
+              <p class="border-b-2 border-primary pb-2 font-semibold text-lg">Shop by rating</p>
+              <div
+                v-for="rating in ratingRange"
+                :key="rating.value"
+                class="flex items-center gap-2 font-semibold"
+              >
+                <input
+                  :id="rating.value"
+                  v-model="ratingsFilter"
+                  :value="rating.value"
+                  name="rating.value"
+                  type="checkbox"
+                  class="w-5 h-5 cursor-pointer text-primary border border-accent bg-white checked:bg-primary accent-primary focus:ring-2 ring-offset-2 outline-offset-4 ring-primary rounded-md"
+                />
+                <label :for="rating.value">
+                  {{ rating.text }}
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <!-- Product cards grid-->
@@ -142,7 +218,7 @@
         </div>
       </div>
       <div
-        v-else-if="!searchedProducts.length"
+        v-else-if="!filteredProducts.length"
         class="flex flex-col items-center justify-center w-full text-center gap-2"
       >
         <svg
@@ -164,39 +240,96 @@
       </div>
       <div
         v-else
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-6"
+        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-6"
       >
         <!-- Product card -->
-        <ProductItem v-for="product in searchedProducts" :key="product.id" :product="product" />
+        <ProductItem v-for="product in filteredProducts" :key="product.id" :product="product" />
       </div>
     </div>
   </main>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useProductStore } from '@/stores/products'
+import { ref, onMounted, computed, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
+import { useProductStore } from '@/stores/products'
 import ProductItem from '@/components/ProductItem.vue'
 
 const toggleCategories = ref(false)
 const toggleFilters = ref(false)
-
 const searchProducts = ref('')
+const selectedOption = ref('a_z')
+const ratingsFilter = ref([])
+const minPrice = ref(0)
+const maxPrice = ref(1000)
+
+const route = useRoute()
 const store = useProductStore()
 const { isLoading } = storeToRefs(store)
+const { fetchProducts, fetchCategories } = useProductStore()
+
+const sortOptions = ref([
+  { text: 'a-z', value: 'a_z' },
+  { text: 'z-a', value: 'z_a' },
+  { text: 'Price: High - Low', value: 'priceDesc' },
+  { text: 'Price: Low - High', value: 'priceAsc' }
+])
+
+const ratingRange = ref([
+  { text: 'Under 1.0', value: '0' },
+  { text: '1.0 - 1.9', value: '1' },
+  { text: '2.0 - 2.9', value: '2' },
+  { text: '3.0 - 3.9', value: '3' },
+  { text: 'Above 4', value: '4' }
+])
 
 const getProducts = computed(() => {
   return store.getProducts
 })
 
-const searchedProducts = computed(() => {
-  return getProducts.value.filter((product) => {
-    return product.title.toLowerCase().includes(searchProducts.value.toLowerCase())
-  })
+const getCategories = computed(() => {
+  return store.getCategories
 })
 
+const filteredProducts = computed(() => {
+  let products = getProducts.value
+
+  products = products.filter((product) => {
+    return product.price >= minPrice.value && product.price <= maxPrice.value
+  })
+
+  if (ratingsFilter.value.length > 0) {
+    products = products.filter((product) => {
+      const rating = product.rating.rate
+      return ratingsFilter.value.includes(String(Math.floor(rating)))
+    })
+  }
+
+  switch (selectedOption.value) {
+    case 'a_z':
+      products = products.sort((a, b) => a.title.localeCompare(b.title))
+      break
+    case 'z_a':
+      products = products.sort((a, b) => b.title.localeCompare(a.title))
+      break
+    case 'priceDesc':
+      products = products.sort((a, b) => b.price - a.price)
+      break
+    case 'priceAsc':
+      products = products.sort((a, b) => a.price - b.price)
+      break
+  }
+
+  return products
+})
+
+watchEffect(() => fetchProducts(route.params.category))
+
 onMounted(() => {
-  store.fetchProducts()
+  if (!route.params.category) {
+    fetchProducts(route.params.category)
+  }
+  fetchCategories()
 })
 </script>
