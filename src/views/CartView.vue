@@ -84,7 +84,7 @@
                 </svg>
               </button>
             </div>
-            <button class="hover:scale-110" @click="removeFromCart">
+            <button class="hover:scale-110" @click="removeFromCart(i)">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
