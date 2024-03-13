@@ -21,7 +21,7 @@
       <p class="font-bold text-2xl tracking-wide">Your cart is currently empty!</p>
     </div>
     <div v-else class="flex flex-col w-full mt-2 sm:mt-6">
-      <div class="mb-6 sm:mb-10 flex flex-col md:flex-row gap-4 justify-between items-end">
+      <div class="mb-6 sm:mb-10 flex flex-col md:flex-row gap-4 justify-between items-start">
         <h2 class="font-bold text-2xl md:text-4xl tracking-wide">Shopping cart</h2>
         <p class="text-lg sm:text-xl font-bold sm:w-fit">
           Total price:
