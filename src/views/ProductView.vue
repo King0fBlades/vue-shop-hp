@@ -56,7 +56,7 @@
             <p class="tracking-wide text-primary 2xl:text-lg">Price:</p>
             <p class="font-bold text-2xl">$ {{ product.price }}</p>
           </div>
-          <Toast />
+          <Toast position="top-center" class="w-fit" />
           <Button
             label="Add to cart"
             severity="add"
