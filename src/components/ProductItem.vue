@@ -8,7 +8,6 @@
       alt="product img"
       class="h-1/2 w-full object-contain bg-white object-center rounded-md"
     />
-    <!-- class="rounded-md object-contain object-center overflow-hidden w-max h-max" -->
     <div class="flex flex-col h-1/2 gap-2 justify-between mt-2">
       <p class="font-bold tracking-wide text-xl text-wrap">{{ product.title }}</p>
       <p class="truncate text-wrap h-24">{{ product.description }}</p>

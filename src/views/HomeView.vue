@@ -53,7 +53,6 @@
       </div>
     </div>
 
-    <!-- <div class="flex flex-col sm:flex-row w-full gap-4 md:gap-6 mt-8 md:mt-14"> -->
     <div class="grid sm:grid-flow-col sm:grid-col-2 gap-4 md:gap-6 mt-8 md:mt-14">
       <!-- Side menu -->
       <div class="flex flex-col gap-4 sm:w-52 lg:w-60">
@@ -156,29 +155,32 @@
             :class="toggleFilters ? 'flex' : 'hidden'"
             class="sm:flex flex-col gap-6 px-4 pb-4 sm:text-left"
           >
-            <div class="flex flex-col gap-4 mb-2">
+            <div class="flex flex-col gap-6 mb-2">
               <p class="border-b-2 border-primary pb-2 font-semibold text-lg">Shop by price</p>
-              <div class="flex flex-row justify-between">
-                <label for="minPrice" class="font-semibold">Min Price:</label>
+              <div class="flex flex-row gap-2 justify-between">
                 <input
-                  id="minPrice"
-                  v-model="minPrice"
+                  v-model="price[0]"
                   type="number"
-                  min="0"
-                  max="1000"
-                  class="text-black w-1/3 rounded-sm p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  :min="price[0]"
+                  :max="price[1]"
+                  class="text-black text-normal sm:text-lg w-1/4 sm:w-1/3 rounded-lg px-2 py-1 font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                />
+                <input
+                  v-model="price[1]"
+                  type="number"
+                  :min="price[0]"
+                  :max="price[1]"
+                  class="text-black text-normal sm:text-lg w-1/4 sm:w-1/3 rounded-lg px-2 py-1 font-semibold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
               </div>
-
-              <div class="flex flex-row justify-between items-center">
-                <label for="maxPrice" class="font-semibold">Max Price:</label>
-                <input
-                  id="maxPrice"
-                  v-model="maxPrice"
-                  type="number"
-                  min="0"
-                  max="1000"
-                  class="text-black w-1/3 rounded-sm p-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              <div class="flex w-full items-center justify-center">
+                <Slider
+                  v-model="price"
+                  :min="0"
+                  :max="1000"
+                  range
+                  class="text-center w-11/12"
+                  :pt="{ range: 'bg-primary' }"
                 />
               </div>
             </div>
@@ -261,8 +263,7 @@ const toggleFilters = ref(false)
 const searchProducts = ref('')
 const selectedOption = ref('a_z')
 const ratingsFilter = ref([])
-const minPrice = ref(0)
-const maxPrice = ref(1000)
+let price = ref([0, 1000])
 
 const route = useRoute()
 const store = useProductStore()
@@ -296,7 +297,7 @@ const filteredProducts = computed(() => {
   let products = getProducts.value
 
   products = products.filter((product) => {
-    return product.price >= minPrice.value && product.price <= maxPrice.value
+    return product.price >= price.value[0] && product.price <= price.value[1]
   })
 
   if (ratingsFilter.value.length > 0) {

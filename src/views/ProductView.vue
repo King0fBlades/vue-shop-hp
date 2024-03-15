@@ -56,12 +56,13 @@
             <p class="tracking-wide text-primary 2xl:text-lg">Price:</p>
             <p class="font-bold text-2xl">$ {{ product.price }}</p>
           </div>
-          <button
+          <Toast />
+          <Button
+            label="Add to cart"
+            severity="add"
             class="font-bold xl:text-xl py-2 2xl:py-4 px-4 2xl:px-8 rounded-lg bg-primary lg:mr-10 hover:scale-105"
             @click="addToCart(product)"
-          >
-            Add to cart
-          </button>
+          />
         </div>
       </div>
     </div>
@@ -73,14 +74,23 @@ import { useRoute } from 'vue-router'
 import { useProductStore } from '@/stores/products'
 import { useCartStore } from '@/stores/cart'
 import { storeToRefs } from 'pinia'
+import { useToast } from 'primevue/usetoast'
+import Button from 'primevue/button'
 
 const cartStore = useCartStore()
 const route = useRoute()
 const { fetchProduct } = useProductStore()
 const { product, isLoading } = storeToRefs(useProductStore())
+const toast = useToast()
 
 const addToCart = (product) => {
   cartStore.addToCart({ ...product })
+  toast.add({
+    severity: 'success',
+    summary: product.title,
+    detail: 'Successfully added to cart ',
+    life: 3000
+  })
 }
 
 fetchProduct(route.params.id)

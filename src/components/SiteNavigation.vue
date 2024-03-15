@@ -21,7 +21,7 @@
             />
           </svg>
           <span
-            class="absolute items-center justify-center -right-2 -top-2 p-1 bg-primary text-xs rounded-full w-5 h-5"
+            class="absolute items-center justify-center -right-3 -top-3 bg-primary text-xs rounded-full w-6 h-6"
             :class="totalItems <= 0 ? 'hidden' : 'flex'"
             >{{ totalItems }}</span
           >
